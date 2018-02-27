@@ -2,8 +2,8 @@ import dropbox
 import csv
 import os
 
-dbx = dropbox.Dropbox('*********************************') #dropbox api secret
-for foldername in ["/Dir 1", "/Dir 2"] :
+
+def create_links(foldername, csvfile) :
 	filesList = []
 	print "creating links for folder " + foldername
 	files = dbx.files_list_folder('/'+foldername)
@@ -15,11 +15,22 @@ for foldername in ["/Dir 1", "/Dir 2"] :
 		filesList.extend(files.entries)
 		print len(files.entries)
 	
+	for file in filesList:
+		if (isinstance(file, dropbox.files.FileMetadata)):
+			filename = file.name + ','
+			link_data = dbx.sharing_create_shared_link(file.path_lower)
+			filename += link_data.url + '\n'
+			csvfile.write(filename)
+			print file.name
+		else: 
+			create_links(foldername+'/'+file.name, csvfile)
+
+
+dbx = dropbox.Dropbox('*********************************') #dropbox api secret
+global filesList
+for foldername in ["/Dir 1", "/Dir 2"] :
+	filesList = []
 	csvfile = open('Files/' + foldername + '.csv',"a+")
 	os.chmod(csvfile.name, 0777)
-	for file in filesList:
-		filename = file.name + ','
-		link_data = dbx.sharing_create_shared_link(file.path_lower)
-		filename += link_data.url + '\n'
-		csvfile.write(filename)
-		print file.name
+	print "creating links for folder " + foldername
+	create_links(foldername, csvfile)
