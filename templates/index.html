@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Dropbox Sharable Links</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	 crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	 crossorigin="anonymous">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+	 crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+	 crossorigin="anonymous"></script>
+	<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+	<style>
+		* {
+			font-family: 'Lato', sans-serif;
+		}
+	</style>
+</head>
+
+<body>
+	<nav class="navbar navbar-dark bg-primary">
+		<div class="container">
+			<span class="navbar-brand mb-0 h1">
+				<i class="fa fa-dropbox"></i>
+			</span>
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item active">
+					<a class="nav-link" href="#">Get Sharable Links</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="mt-5"></div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="card">
+					<div class="card-body">
+						<h4 class="card-title">Create Sharable Links</h4>
+						<h6 class="card-subtitle mb-2 text-muted">Enter your Dropbox API key &amp; Folders for whic you wish to generate sharable links</h6>
+						<form>
+							<div class="form-group">
+								<input type="password" class="form-control form-control-sm" id="txtAPiKey" placeholder="API Key">
+							</div>
+							<div class="form-group">
+								<textarea class="form-control form-control-sm" id="txtFolderPaths" rows="3"></textarea>
+							</div>
+							<button type="button" id="btnGenerateLinks" class="btn btn-primary btn-sm pull-right">Generate Links</button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="card">
+					<div class="card-body">
+						<h4 class="card-title">Get Token Status</h4>
+						<h6 class="card-subtitle mb-2 text-muted">Enter your Token to get the links for the generated files</h6>
+						<form>
+							<div class="form-group">
+								<input type="text" class="form-control form-control-sm" id="txtToken" placeholder="Token">
+							</div>
+							<button type="button" id="btnGetTokenStatus" class="btn btn-primary btn-sm pull-right">Get Token Status</button>
+						</form>
+						<div class="clearfix"></div>
+						<code id="tokenStatus"></code>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		$(document).ready(function () {
+			$("#btnGenerateLinks").click(function () {
+
+			});
+
+			$("#btnGetTokenStatus").click(function () {
+				var token = $("#txtToken").val();
+				$.ajax({
+					url: '/get_status/' + token,
+					success: function (data) {
+						$("#tokenStatus").text(JSON.stringify(data))
+					}
+				});
+			});
+		});
+	</script>
+</body>
+
+</html>

@@ -72,16 +72,16 @@ def start(api_key, folders) :
     return {"status":True, "message":"Successfully queued for generating links", "token":directory}
 
 def save_collection_to_db(collection) :
-    db = TinyDB('Database/db.json')
+    db = TinyDB('./Database/db.json')
     db.insert(collection)
 
 def update_end_time(foldername, token) :
-    db = TinyDB('Database/db.json')
+    db = TinyDB('./Database/db.json')
     Token = Query()
     db.update({'end_time': strftime("%Y-%m-%d %H:%M:%S", gmtime())}, (Token.token==token) & (Token.folder_name==foldername))
 
 def get_token_status(token) :
-    db = TinyDB('Database/db.json')
+    db = TinyDB('./Database/db.json')
     Token = Query()
     return db.search(Token.token==token)
 
