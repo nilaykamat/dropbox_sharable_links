@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 import get_sharable_links
 
 app = Flask(__name__)
@@ -18,6 +18,11 @@ def create_links():
 def get_status(token):
 	tokenResponse = get_sharable_links.get_token_status(token)
 	return jsonify(tokenResponse)
+
+@app.route("/Files/<token>/<file_name>")
+def download(token, file_name) :
+    return send_from_directory(directory='Files/'+token, filename=file_name)
+
 
 if (__name__ == "__main__"):
     app.run(port = 5000)
