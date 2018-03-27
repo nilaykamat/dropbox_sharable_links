@@ -130,6 +130,8 @@
 								console.log(item);
 								if (item.end_time != false) {
 									fileList += '<li><a href="/' + item.file_path + '">' + item.file_path + '</a></li>';
+								} else {
+									fileList += '<li>' + item.file_path + ' - still generating links</li>'
 								}
 							});
 							$("#tokenStatus").html("<ul>" + fileList + "</ul>");
