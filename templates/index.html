@@ -18,6 +18,8 @@
 	<style>
 		* {
 			font-family: 'Lato', sans-serif;
+			line-height: 2;
+    		letter-spacing: 0.5px;
 		}
 	</style>
 </head>
@@ -57,7 +59,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<textarea class="form-control form-control-sm" id="txtFolderPaths" rows="6"></textarea>
+								<textarea class="form-control form-control-sm" id="txtFolderPaths" rows="6" placeholder="Folder Paths"></textarea>
 							</div>
 							<button type="button" id="btnGenerateLinks" class="btn btn-primary btn-sm pull-right">Generate Links</button>
 						</form>
@@ -83,7 +85,39 @@
 				</div>
 			</div>
 		</div>
+		<div class="row mt-5">
+			<div class="col-md-12">
+				<h3>How this works</h3>
+				<p>This utility will allow a user to generate the <strong>Sharable Links</strong> in Bulk for all the files within a given folder.</p>
+				<hr>
+				<h5>1. Generating API Key</h5>
+				<ul>
+					<li>Log in to Dropbox</li>
+					<li>Visit Link <a href="https://www.dropbox.com/developers/apps" target="_blank">https://www.dropbox.com/developers/apps</a></li>
+					<li>Click on Create app (button to top right)</li>
+					<li>Select the option <strong>"Dropbox API"</strong> (first option)</li>
+					<li>Select the option <strong>"Full Dropbox"</strong></li>
+					<li>Give an appropriate name to your app</li>
+					<li>Once the app is created, Open it</li>
+					<li>You have to click on the button to <strong>"Generate Access Token"</strong> which is present in the "OAuth2" section of the app</li>
+					<li>Copy the token that is generated and save it somewhere</li>
+					<li>This Token is used as the <strong>API Key</strong> in our application</li>
+				</ul>
+				<h5>2. Getting Folder Paths</h5>
+				<ul>
+					<li>The folder paths should start with <strong>"/"</strong></li>
+					<li>The folder path should be the path relative from the <strong>Dropbox Root Directory</strong></li>
+					<li>If more than 1 folder paths are to be selected, then insert new folder path on a new line</li>
+					<li>Each folder path will have a corresponding csv file generated</li>
+					<li>All the files in the folder as well as all the sub-folders will generate sharable links</li>
+					<li>Folder Paths are case sensitive. Please make sure you add proper casing and spaces while adding folder paths.</li>
+				</ul>
+			</div>
+		</div>
+		<hr>
+		<footer class="text-center my-3">&copy; Dropbox Sharable Links</footer>
 	</div>
+
 	<script>
 		$(document).ready(function () {
 			$("#btnToggleAPIDisplay").click(function () {
