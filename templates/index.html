@@ -46,13 +46,23 @@
 						<h6 class="card-subtitle mb-2 text-muted">Enter your Dropbox API key &amp; Folders for whic you wish to generate sharable links</h6>
 						<form>
 							<div class="form-group">
-								<input type="password" class="form-control form-control-sm" id="txtAPiKey" placeholder="API Key">
+								<div class="input-group">
+									<input type="password" class="form-control form-control-sm" id="txtAPiKey" placeholder="API Key">
+									<div class="input-group-append">
+										<button id="btnToggleAPIDisplay" class="btn btn-outline-secondary btn-sm" type="button" data-toggle="button" aria-pressed="false"
+										 autocomplete="off">
+											<i class="fa fa-eye"></i>
+										</button>
+									</div>
+								</div>
 							</div>
 							<div class="form-group">
-								<textarea class="form-control form-control-sm" id="txtFolderPaths" rows="3"></textarea>
+								<textarea class="form-control form-control-sm" id="txtFolderPaths" rows="6"></textarea>
 							</div>
 							<button type="button" id="btnGenerateLinks" class="btn btn-primary btn-sm pull-right">Generate Links</button>
 						</form>
+						<div class="clearfix"></div>
+						<code id="tokenResponse"></code>
 					</div>
 				</div>
 			</div>
@@ -76,8 +86,35 @@
 	</div>
 	<script>
 		$(document).ready(function () {
-			$("#btnGenerateLinks").click(function () {
+			$("#btnToggleAPIDisplay").click(function () {
+				if ($("#btnToggleAPIDisplay").hasClass('active')) {
+					// Hide API
+					$("#txtAPiKey").attr('type', 'password');
+				} else {
+					// Show API
+					$("#txtAPiKey").attr('type', 'text');
+				}
+			});
 
+			$("#btnGenerateLinks").click(function () {
+				var apiKey = $("#txtAPiKey").val();
+				var folders = $("#txtFolderPaths").val().split(/\n/);
+				$.ajax({
+					url: '/create_links',
+					contentType: "application/json",
+					type: 'POST',
+					dataType: 'json',
+					data: JSON.stringify({
+						api_key : apiKey,
+						folders : folders
+					}),
+					success: function (data) {
+						if(data.status == true){
+							$("#tokenResponse").html(data.message + '<br>');
+							$("#tokenResponse").append('Use this token to check the status : ' + data.token);
+						}
+					}
+				});
 			});
 
 			$("#btnGetTokenStatus").click(function () {
@@ -85,7 +122,18 @@
 				$.ajax({
 					url: '/get_status/' + token,
 					success: function (data) {
-						$("#tokenStatus").text(JSON.stringify(data))
+						if (data.length == 0) {
+							$("#tokenStatus").text("Token Not Found");
+						} else {
+							var fileList = '';
+							$.each(data, function (index, item) {
+								console.log(item);
+								if (item.end_time != false) {
+									fileList += '<li><a href="/' + item.file_path + '">' + item.file_path + '</a></li>';
+								}
+							});
+							$("#tokenStatus").html("<ul>" + fileList + "</ul>");
+						}
 					}
 				});
 			});
