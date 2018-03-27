@@ -92,6 +92,7 @@ def get_file_name(foldername) :
 def create_csv(filePath) :
 	csvfile = open(filePath, "a+")
 	os.chmod(csvfile.name, 0777)
+	csvfile.write('File Name, File Path, Sharable Link \n')
 	return csvfile
 
 def generate_random_token() :
