@@ -120,6 +120,15 @@
 
 	<script>
 		$(document).ready(function () {
+			var storageToken = localStorage.getItem('dropbox-token');
+			var apiToken = localStorage.getItem('api-token');
+			if(storageToken){
+				$("#txtToken").val(storageToken);
+			}
+			if(apiToken){
+				$("#txtAPiKey").val(apiToken);
+			}
+
 			$("#btnToggleAPIDisplay").click(function () {
 				if ($("#btnToggleAPIDisplay").hasClass('active')) {
 					// Hide API
@@ -146,6 +155,9 @@
 						if(data.status == true){
 							$("#tokenResponse").html(data.message + '<br>');
 							$("#tokenResponse").append('Use this token to check the status : ' + data.token);
+							$("#txtToken").val(data.token);
+							localStorage.setItem('dropbox-token', data.token);
+							localStorage.setItem('api-token', apiKey);
 						}
 					}
 				});
@@ -153,6 +165,7 @@
 
 			$("#btnGetTokenStatus").click(function () {
 				var token = $("#txtToken").val();
+				localStorage.setItem('dropbox-token', token);
 				$.ajax({
 					url: '/get_status/' + token,
 					success: function (data) {
