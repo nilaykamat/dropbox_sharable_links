@@ -141,7 +141,7 @@
 
 			$("#btnGenerateLinks").click(function () {
 				var apiKey = $("#txtAPiKey").val();
-				var folders = $("#txtFolderPaths").val().split(/\n/);
+				var folders = $("#txtFolderPaths").val().split(/\n/).clean('');
 				$.ajax({
 					url: '/create_links',
 					contentType: "application/json",
@@ -187,6 +187,16 @@
 				});
 			});
 		});
+
+		Array.prototype.clean = function(deleteValue) {
+			for (var i = 0; i < this.length; i++) {
+				if (this[i] == deleteValue) {         
+					this.splice(i, 1);
+					i--;
+				}
+			}
+			return this;
+		};
 	</script>
 </body>
 
