@@ -26,7 +26,7 @@ def create_links(foldername, csvfile) :
 
     for file in filesList :
         if (isinstance(file, dropbox.files.FileMetadata)) :
-            filename = file.name + ',' + file.path_lower + ','
+            filename = file.name + ',' + file.path_display + ',' + file.size + ','
             link_data = dbx.sharing_create_shared_link(file.path_lower)
             filename += link_data.url + '\n'
             csvfile.write(filename)
@@ -97,7 +97,7 @@ def get_file_name(foldername) :
 def create_csv(filePath) :
 	csvfile = open(filePath, "a+")
 	os.chmod(csvfile.name, 0777)
-	csvfile.write('File Name, File Path, Sharable Link \n')
+	csvfile.write('File Name, File Path, File Size (in bytes), Sharable Link \n')
 	return csvfile
 
 def generate_random_token() :
