@@ -67,7 +67,7 @@ def start(api_key, folders) :
         	'folder_name' : foldername,
 	        'start_time' : strftime("%Y-%m-%d %H:%M:%S", gmtime()),
         	'end_time' : False,
-		'status' : 0
+			'status' : 0
         }
     	save_collection_to_db(listElem)
 
