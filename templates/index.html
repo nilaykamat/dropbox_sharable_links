@@ -108,6 +108,10 @@
 					<li>The folder paths should start with <strong>"/"</strong></li>
 					<li>The folder path should be the path relative from the <strong>Dropbox Root Directory</strong></li>
 					<li>If more than 1 folder paths are to be selected, then insert new folder path on a new line</li>
+					<li>
+						Example : <br>
+						<code>/SS'18/Amazon/amazon 172 lot 5<br>/SS'18/Amazon/amazon 172 lot 6<br>/SS'18/Raymond Next/raymondnext 172</code>
+					</li>
 					<li>Each folder path will have a corresponding csv file generated</li>
 					<li>All the files in the folder as well as all the sub-folders will generate sharable links</li>
 					<li>Folder Paths are case sensitive. Please make sure you add proper casing and spaces while adding folder paths.</li>
@@ -175,19 +179,24 @@
 							var fileList = '';
 							$.each(data, function (index, item) {
 								console.log(item);
-								if (item.end_time != false) {
-									fileList += '<li><a href="/' + item.file_path + '">' + item.file_path + '</a></li>';
-								} else {
-									fileList += '<li>' + item.file_path + ' - still generating links</li>'
+								switch(item.status){
+									case 0 :
+										fileList += '<li><i class="fa fa-spin fa-spinner"></i> ' + item.folder_name + '</li>';
+									break;
+									case 1 :
+										fileList += '<li><i class="fa fa-exclamation-circle"></i> ' + item.folder_name + ' - Failed. Check Foldername</li>';
+									break;
+									case 2 :
+										fileList += '<li><a href="/Files/' + token + '/' + item.file_path.split('/').pop() + '"><i class="fa fa-check"></i> ' + item.folder_name + '</a></li>';
+									break;
 								}
 							});
-							$("#tokenStatus").html("<ul>" + fileList + "</ul>");
+							$("#tokenStatus").html("<ul style='list-style:none;'>" + fileList + "</ul>");
 						}
 					}
 				});
 			});
 		});
-
 		Array.prototype.clean = function(deleteValue) {
 			for (var i = 0; i < this.length; i++) {
 				if (this[i] == deleteValue) {         

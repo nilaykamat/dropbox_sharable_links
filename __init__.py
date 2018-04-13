@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template, send_from_directory
 import get_sharable_links
+import os
 
 app = Flask(__name__)
 
@@ -21,8 +22,8 @@ def get_status(token):
 
 @app.route("/Files/<token>/<file_name>")
 def download(token, file_name) :
-    return send_from_directory(directory='Files/'+token, filename=file_name)
+    return send_from_directory(directory=os.path.dirname(os.path.realpath(__file__))+'/Files/'+token, filename=file_name)
 
 
 if (__name__ == "__main__"):
-    app.run(port = 5000)
+    app.run()

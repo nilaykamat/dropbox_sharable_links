@@ -5,41 +5,44 @@ import json
 from time import gmtime, strftime
 import random
 import string
+import urllib
 from threading import Thread
 from tinydb import TinyDB, Query
+
+global BASE_URL
+BASE_URL = os.path.dirname(os.path.realpath(__file__)) 
 
 def create_links(foldername, csvfile) :
     filesList = []
     print("creating links for folder " + foldername)
-    try : 
-        files = dbx.files_list_folder('/'+foldername)
+    files = dbx.files_list_folder('/'+foldername)
+    filesList.extend(files.entries)
+    print(len(files.entries))
+    
+    while(files.has_more == True) :
+        files = dbx.files_list_folder_continue(files.cursor)
         filesList.extend(files.entries)
         print(len(files.entries))
 
-        while(files.has_more == True) :
-            files = dbx.files_list_folder_continue(files.cursor)
-            filesList.extend(files.entries)
-            print(len(files.entries))
-
-        for file in filesList :
-            if (isinstance(file, dropbox.files.FileMetadata)) :
-                filename = file.name + ',' + file.path_lower + ','
-                link_data = dbx.sharing_create_shared_link(file.path_lower)
-                filename += link_data.url + '\n'
-                csvfile.write(filename)
-                print(file.name)
-            else :
-                create_links(foldername+'/'+file.name, csvfile)
-    except :
-        print "Exception Happened"
-        print foldername
+    for file in filesList :
+        if (isinstance(file, dropbox.files.FileMetadata)) :
+            filename = file.name + ',' + file.path_lower + ','
+            link_data = dbx.sharing_create_shared_link(file.path_lower)
+            filename += link_data.url + '\n'
+            csvfile.write(filename)
+            print(file.name)
+        else :
+            create_links(foldername+'/'+file.name, csvfile)
 
 
 def thread_lifecycle(foldername, csvfile, token) :
-	# pre execution code
-	# Link creation execution
-    create_links(foldername, csvfile)
-    update_end_time(foldername, token)
+    # pre execution code
+    # Link creation execution
+    try :
+        create_links(foldername, csvfile)
+	update_end_time(foldername, token, 2)
+    except : 
+        update_end_time(foldername, token, 1)
 
 
 def start(api_key, folders) :
@@ -49,20 +52,22 @@ def start(api_key, folders) :
     dbx = dropbox.Dropbox(api_key) #dropbox api secret
 
     directory = generate_random_token()
-    os.makedirs('Files/'+ directory)
+    os.makedirs(BASE_URL + '/Files/'+ directory)
     
     for foldername in folders :
+	foldername = urllib.unquote(foldername)
         nameOfFile = get_file_name(foldername)
         
-        filePath = 'Files/' + directory + '/' + nameOfFile + '.csv'
+        filePath = BASE_URL + '/Files/' + directory + '/' + nameOfFile + '.csv'
         csvfile = create_csv(filePath)
         
         listElem = {
-			'token' : directory,
-            'file_path' : filePath,
-            'folder_name' : foldername,
-            'start_time' : strftime("%Y-%m-%d %H:%M:%S", gmtime()),
-            'end_time' : False
+		'token' : directory,
+	        'file_path' : filePath,
+        	'folder_name' : foldername,
+	        'start_time' : strftime("%Y-%m-%d %H:%M:%S", gmtime()),
+        	'end_time' : False,
+		'status' : 0
         }
     	save_collection_to_db(listElem)
 
@@ -72,16 +77,16 @@ def start(api_key, folders) :
     return {"status":True, "message":"Successfully queued for generating links", "token":directory}
 
 def save_collection_to_db(collection) :
-    db = TinyDB('./Database/db.json')
+    db = TinyDB(BASE_URL + '/Database/db.json')
     db.insert(collection)
 
-def update_end_time(foldername, token) :
-    db = TinyDB('./Database/db.json')
+def update_end_time(foldername, token, status) :
+    db = TinyDB(BASE_URL + '/Database/db.json')
     Token = Query()
-    db.update({'end_time': strftime("%Y-%m-%d %H:%M:%S", gmtime())}, (Token.token==token) & (Token.folder_name==foldername))
+    db.update({'end_time': strftime("%Y-%m-%d %H:%M:%S", gmtime()), 'status': status}, (Token.token==token) & (Token.folder_name==foldername))
 
 def get_token_status(token) :
-    db = TinyDB('./Database/db.json')
+    db = TinyDB(BASE_URL + '/Database/db.json')
     Token = Query()
     return db.search(Token.token==token)
 
@@ -97,3 +102,5 @@ def create_csv(filePath) :
 
 def generate_random_token() :
 	return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(16))
+
+
