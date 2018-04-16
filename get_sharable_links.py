@@ -26,7 +26,7 @@ def create_links(foldername, csvfile) :
 
     for file in filesList :
         if (isinstance(file, dropbox.files.FileMetadata)) :
-            filename = file.name + ',' + file.path_display + ',' + file.size + ','
+            filename = file.name + ',' + file.path_display + ',' + str(file.size) + ','
             link_data = dbx.sharing_create_shared_link(file.path_lower)
             filename += link_data.url + '\n'
             csvfile.write(filename)
@@ -40,8 +40,8 @@ def thread_lifecycle(foldername, csvfile, token) :
     # Link creation execution
     try :
         create_links(foldername, csvfile)
-	update_end_time(foldername, token, 2)
-    except : 
+		update_end_time(foldername, token, 2)
+    except :
         update_end_time(foldername, token, 1)
 
 
