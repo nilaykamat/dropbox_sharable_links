@@ -23,7 +23,7 @@ Ths code snippet iterates through the folders provided in the code and generates
 	<li>If more than 1 folder paths are to be selected, then insert new folder path on a new line</li>
 	<li>
 		Example : <br>
-		<code>/SS'18/Amazon/amazon 172 lot 5<br>/SS'18/Amazon/amazon 172 lot 6<br>/SS'18/Raymond Next/raymondnext 172</code>
+		<pre>/SS'18/Amazon/amazon 172 lot 5<br>/SS'18/Amazon/amazon 172 lot 6<br>/SS'18/Raymond Next/raymondnext 172</pre>
 	</li>
 	<li>Each folder path will have a corresponding csv file generated</li>
 	<li>All the files in the folder as well as all the sub-folders will generate sharable links</li>
